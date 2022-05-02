@@ -50,10 +50,7 @@ func printUnknown(text string) {
 
 // displayHelp informs the user about our hardcoded functions
 func displayHelp() {
-	fmt.Printf(
-		"Welcome to %v! These are the available commands: \n",
-		cliName,
-	)
+	fmt.Printf("Welcome to %v! These are the available commands: \n", cliName)
 	fmt.Println(".help    - Show available commands")
 	fmt.Println(".clear   - Clear the terminal screen")
 	fmt.Println(".exit    - Closes your connection to", "sqlite")
