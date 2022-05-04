@@ -36,7 +36,7 @@ func main() {
 }
 
 // cliName is the name used in the repl prompts
-var cliName string = "simpleREPL"
+var cliName string = "sqlite"
 
 // printPrompt displays the repl prompt at the start of each loop
 func printPrompt() {
