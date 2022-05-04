@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func execCommand() {
+func execCom() {
 	fmt.Println("Hello\nworld\n!!!")
 	cmd := exec.Command("echo", "I get it")
 	cmd.Stdout = os.Stdout
