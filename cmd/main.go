@@ -5,19 +5,20 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"sqlite/domain"
 	"strings"
 )
 
 func main() {
 	// Hardcoded repl commands
-	metaCommands := map[string]interface{}{
-		".help":  displayHelp,
-		".clear": clearScreen,
+	metaCommands := map[domain.Command]interface{}{
+		domain.HELP:  displayHelp,
+		domain.CLEAR: clearScreen,
 	}
 
-	statements := map[string]interface{}{
-		"select": selectState,
-		"insert": insertState,
+	statements := map[domain.Statement]interface{}{
+		domain.SELECT: selectState,
+		domain.INSERT: insertState,
 	}
 	// Begin the repl loop
 	reader := bufio.NewScanner(os.Stdin)
@@ -25,7 +26,8 @@ func main() {
 	for reader.Scan() {
 		text := cleanInput(reader.Text())
 		if strings.EqualFold(".", string(reader.Bytes()[0])) {
-			if command, exists := metaCommands[text]; exists {
+			cmd := domain.Command(text)
+			if command, exists := metaCommands[domain.Command(text)]; exists {
 				// Call a hardcoded function
 				command.(func())()
 			} else if strings.EqualFold(".exit", text) {
@@ -33,15 +35,16 @@ func main() {
 				return
 			} else {
 				// Pass the command to the parser
-				handleCmd(text)
+				cmd.HandlerInput()
 			}
 		} else {
-			if statement, exists := statements[text]; exists {
+			stm := domain.Statement(text)
+			if statement, exists := statements[domain.Statement(text)]; exists {
 				// Call a hardcoded function
 				statement.(func())()
 			} else {
-				// Pass the command to the parser
-				handleCmd(text)
+				// Pass the statement to the parser
+				stm.HandlerInput()
 			}
 		}
 
@@ -59,11 +62,6 @@ func printPrompt() {
 	fmt.Print(cliName, "> ")
 }
 
-// printUnkown informs the user about invalid commands
-func printUnknown(text string) {
-	fmt.Println(text, ": command not found")
-}
-
 // displayHelp informs the user about our hardcoded functions
 func displayHelp() {
 	fmt.Printf("Welcome to %v! These are the available commands: \n", cliName)
@@ -76,23 +74,17 @@ func displayHelp() {
 func clearScreen() {
 	cmd := exec.Command("clear")
 	cmd.Stdout = os.Stdout
-	cmd.Run()
-}
-
-// handleInvalidCmd attempts to recover from a bad command
-func handleInvalidCmd(text string) {
-	defer printUnknown(text)
-}
-
-// handleCmd parses the given commands
-func handleCmd(text string) {
-	handleInvalidCmd(text)
+	err := cmd.Run()
+	if err != nil {
+		fmt.Println("error : ", err.Error())
+	}
 }
 
 // cleanInput preprocesses input to the db repl
 func cleanInput(text string) string {
 	output := strings.TrimSpace(text)
 	output = strings.ToLower(output)
+
 	return output
 }
 
