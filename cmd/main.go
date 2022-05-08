@@ -12,13 +12,13 @@ import (
 func main() {
 	// Hardcoded repl commands
 	metaCommands := map[domain.Command]interface{}{
-		domain.HELP:  displayHelp,
-		domain.CLEAR: clearScreen,
+		domain.CommandEnum.HELP:  displayHelp,
+		domain.CommandEnum.CLEAR: clearScreen,
 	}
 
 	statements := map[domain.Statement]interface{}{
-		domain.SELECT: selectState,
-		domain.INSERT: insertState,
+		domain.StatementEnum.SELECT: selectState,
+		domain.StatementEnum.INSERT: insertState,
 	}
 	// Begin the repl loop
 	reader := bufio.NewScanner(os.Stdin)
