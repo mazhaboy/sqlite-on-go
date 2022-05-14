@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"sqlite/domain"
+	"sqlite/statement"
 	"strings"
 )
 
@@ -16,9 +17,9 @@ func main() {
 		domain.CommandEnum.CLEAR: clearScreen,
 	}
 
-	statements := map[domain.Statement]interface{}{
-		domain.StatementEnum.SELECT: selectState,
-		domain.StatementEnum.INSERT: insertState,
+	statements := map[domain.StatementType]interface{}{
+		domain.StatementEnum.SELECT: domain.StatementEnum.SELECT,
+		domain.StatementEnum.INSERT: domain.StatementEnum.INSERT,
 	}
 	// Begin the repl loop
 	reader := bufio.NewScanner(os.Stdin)
@@ -38,14 +39,22 @@ func main() {
 				cmd.HandlerInput()
 			}
 		} else {
-			stm := domain.Statement(text)
-			if statement, exists := statements[domain.Statement(text)]; exists {
+			statementArgs := strings.Split(text, domain.WhiteSpace)
+			stm := domain.StatementType(statementArgs[0])
+			fmt.Println(statementArgs)
+			if statementType, exists := statements[stm]; exists {
 				// Call a hardcoded function
-				statement.(func())()
+				switch statementType {
+				case domain.INSERT:
+					statement.Insert(text)
+				case domain.SELECT:
+					statement.Select(text)
+				}
 			} else {
 				// Pass the statement to the parser
-				stm.HandlerInput()
+				stm.HandlerInput(domain.InvalidStatement)
 			}
+
 		}
 
 		printPrompt()
