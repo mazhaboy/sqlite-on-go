@@ -47,6 +47,7 @@ func main() {
 				switch statementType {
 				case domain.INSERT:
 					statement.Insert(text)
+					fmt.Println(domain.Tbl)
 				case domain.SELECT:
 					statement.Select(text)
 				}

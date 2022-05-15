@@ -5,34 +5,39 @@ import (
 )
 
 type StatementType string
+type Command string
+type ErrorMessage string
 
 type Row struct {
 	ID       uint32
-	Username [UsernameMaxSize]byte
-	Email    [EmailMaxSize]byte
+	Username []byte
+	Email    []byte
 }
-
-type Page [RowMaxSize]*Row
 
 type Table struct {
 	RowNums uint32
-	Pages   Page
+	Pages   []*Page
 }
-
-const (
-	UsernameMaxSize = 32
-	EmailMaxSize    = 255
-	TableMaxPages   = 100
-	RowMaxSize      = 12
-)
 
 type Statement struct {
 	Type StatementType
 	Row  Row
 }
 
-type Command string
-type ErrorMessage string
+type Page []*Row
+
+var Tbl Table
+
+const (
+	UsernameMaxSize = 32
+	EmailMaxSize    = 255
+	UserNameOffset  = 4
+	EmailOffset     = 36
+	PageSize        = 4096
+	TableMaxPages   = 100
+	RowPerPage      = PageSize / TableMaxPages
+	TableMaxRows    = RowPerPage * TableMaxPages
+)
 
 const WhiteSpace = " "
 
