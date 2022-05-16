@@ -47,7 +47,6 @@ func main() {
 				switch statementType {
 				case domain.INSERT:
 					statement.Insert(text)
-					fmt.Println(domain.Tbl)
 				case domain.SELECT:
 					statement.Select(text)
 				}
@@ -96,12 +95,4 @@ func cleanInput(text string) string {
 	output = strings.ToLower(output)
 
 	return output
-}
-
-func insertState() {
-	fmt.Println("INSERT - insert to database")
-}
-
-func selectState() {
-	fmt.Println("SELECT - select from database")
 }
